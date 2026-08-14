@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 
 import com.example.ems1.dto.VerifyOtpRequest;
 import com.example.ems1.entity.User;
+import com.example.ems1.exception.InvalidOtpException;
+import com.example.ems1.exception.UserNotFoundException;
+import com.example.ems1.exception.VerifedException;
 import com.example.ems1.repository.UserRepository;
 
 @Service
@@ -21,9 +24,12 @@ public String VerifyOtp(VerifyOtpRequest verifyOtpRequest) {
 	Optional<User> optionalUser = userRepository.getByEmail(verifyOtpRequest.getEmail());
 	if(optionalUser.isPresent()) {
 		User user = optionalUser.get();
+		if(user.getOtp()==null) {
+			throw new VerifedException("user is already verified");
+		}
 		if(!user.getOtp().equals(verifyOtpRequest.getOtp())) {
 		
-			return " invalid OTP";
+			throw new InvalidOtpException("Invalid OTP");
 	}
 		if(LocalDateTime.now().isAfter(user.getOtpexpirytime())) {
 			return "OTP expired";
@@ -36,7 +42,7 @@ public String VerifyOtp(VerifyOtpRequest verifyOtpRequest) {
 			return"otp verified successfully";
 		}
 }else {
-	return "no such user is present";
+	throw new UserNotFoundException("no user found");
 }
 	
 }}

@@ -37,4 +37,8 @@ public class UserController {
 		return	otpService.VerifyOtp(verifyOtpRequest);
 	}
 	
+	@GetMapping
+	public String getUsers() {
+		return "List of users";
+	}
 }
