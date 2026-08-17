@@ -2,11 +2,18 @@ package com.example.ems1.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandling {
+	
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<String> invalidata(MethodArgumentNotValidException exception) {
+		String message=exception.getBindingResult().getFieldError().getDefaultMessage();
+		return new ResponseEntity<String>(message,HttpStatus.BAD_REQUEST);
+	}
 
 	@ExceptionHandler(UserNotFoundException.class)
 	public ResponseEntity<String> userNotFound(UserNotFoundException userNotFoundException) {

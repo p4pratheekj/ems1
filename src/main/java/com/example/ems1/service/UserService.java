@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.ems1.dto.RegisterRequest;
+import com.example.ems1.dto.VerifyOtpRequest;
 import com.example.ems1.entity.User;
 import com.example.ems1.repository.UserRepository;
 
@@ -47,7 +48,7 @@ public class UserService {
 			String otp=OtpGenerator.generateOtp();
 			
 			user.setOtp(otp);
-			user.setOtpexpirytime(LocalDateTime.now().plusMinutes(10));     // like it mention that otp expirs in next 10 min of geneartion
+			user.setOtpexpirytime(LocalDateTime.now().plusMinutes(1));     // like it mention that otp expirs in next 10 min of geneartion
 			
 			userRepository.save(user);
 			
@@ -57,6 +58,31 @@ public class UserService {
 			return "Please Enter The Otp For Verification";
 		}
 	}
-	
-	
+	public String resendOtp(VerifyOtpRequest verifyOtpRequest) {
+		Optional<User> ou = userRepository.getByEmail(verifyOtpRequest.getEmail());
+		
+		if(ou.isEmpty()) { 
+			return "The email does not exist. Please register first.";
+		} 
+		
+		User user = ou.get();
+		String otp = OtpGenerator.generateOtp();
+		
+		user.setOtp(otp);
+		user.setOtpexpirytime(LocalDateTime.now().plusMinutes(10)); 
+		
+		userRepository.save(user);
+		emailService.sendotp(verifyOtpRequest.getEmail(), otp);
+		
+		return "A new OTP has been sent. Please enter the OTP for verification.";
+	}
+
+		
 }
+
+
+
+	
+	
+	
+

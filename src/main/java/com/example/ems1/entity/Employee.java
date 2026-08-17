@@ -13,13 +13,14 @@ import lombok.Data;
 @Table(name="employees")
 public class Employee {
 	@Id
-	@Email
+	@Email(message = "Email should be valid")
+	@NotBlank(message = "Email is mandatory")
 	private String email;
-	@NotBlank
+	@NotBlank(message = "name should't be null, Empty and blank")
 	private String name;
-	@Positive
+	@Positive(message = "salary should be more than Rs:0")
 	private double salary;
-	@NotBlank
+	@NotBlank(message = "name should't be null, Empty and blank")
 	private String dept;
 
 }

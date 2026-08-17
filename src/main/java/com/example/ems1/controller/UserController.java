@@ -37,8 +37,8 @@ public class UserController {
 		return	otpService.VerifyOtp(verifyOtpRequest);
 	}
 	
-	@GetMapping
-	public String getUsers() {
-		return "List of users";
+	@PostMapping("/resend-otp")
+	public String resendOtp(@RequestBody VerifyOtpRequest verifyOtpRequest) {
+		return userService.resendOtp(verifyOtpRequest);
 	}
 }
